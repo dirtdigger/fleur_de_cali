@@ -7,7 +7,7 @@ import os
 height    = 4 # mm, minimum is 0.8
 chamferSize = 0.8
 thickness = 4.0 #mm
-fullWidth = 150
+fullWidth = 120
 numMeasPoints = 3
 diagWidth = 15
 # adjustment at the corners to account for potentially
@@ -23,7 +23,9 @@ halfWidth = fullWidth/2
 
 def thickLine(x0, x1, y0, y1, 
               height = height, thickness = thickness,
-              wp = cq.Workplane()):
+              wp = cq.Workplane(),
+              chamferStart = True,
+              chamferEnd = True):
     dx = x1 - x0
     dy = y1 - y0
     
@@ -34,10 +36,18 @@ def thickLine(x0, x1, y0, y1,
     print(theta)
     L = np.sqrt(dx**2 + dy**2)
     
-    return (wp.center(0,0)
+    line = (wp.center(0,0)
                 .rect(L, thickness).extrude(height)
-                .edges("|Z").chamfer(chamferSize)
-                .rotate((0,0,0),(0,0,1), theta*180/np.pi)
+                )
+    
+    if chamferStart:
+        line = line.faces("-X").edges("|Z").chamfer(chamferSize)
+    
+    if chamferEnd:
+        line = line.faces("+X").edges("|Z").chamfer(chamferSize)
+    
+    
+    return (line.rotate((0,0,0),(0,0,1), theta*180/np.pi)
                 .translate((xbar,ybar,0))
                 )
 
@@ -80,14 +90,14 @@ for ii in range(numMeasPoints):
     result = result + thickLine(-(ii+1)*sep -thickness/2, 
                                 -(ii+1)*sep -thickness/2, 
 #                                -sep/2,sep)
-                                0,sep)
+                                -thickness,sep)
     
     
     
     result = result + thickLine((ii+1)*sep + thickness/2, 
                                 (ii+1)*sep + thickness/2, 
                                 #-sep/2, sep)
-                                0,sep)
+                                -thickness,sep)
     
     result = result + thickLine((ii+1)*sep - thickness/2, 
                                 (ii+1)*sep -thickness/2, 
@@ -97,6 +107,7 @@ for ii in range(numMeasPoints):
     # Interior caliper stops
     # (thickness/2 + sep - thickness)/2
     # = sep/2 - thickness/4
+    
     caliperStops = caliperStops + thickLine((ii+1)*sep - thickness*2/3 - pa*2, # formerly - thickness
                                 (ii+1)*sep + thickness/2,
                                 sep/2 + thickness/4,
@@ -106,13 +117,21 @@ for ii in range(numMeasPoints):
                                 -(ii+1)*sep - thickness/2,
                                 sep/2-3*thickness/4,
                                 sep/2-3*thickness/4)
+    
+    """
+    caliperStops = caliperStops + thickLine((ii+1)*sep - thickness/2, # formerly - thickness
+                                            (ii+1)*sep - thickness/2,
+                                            sep/2 - thickness,
+                                            sep/2,
+                                            chamferStart = False)
 
-    #result = result + thickLine(cq.Workplane(), 
-    #                            (ii+1)*sep - thickness/2, 
-    #                            (ii+1)*sep - thickness/2, 
-    #                            sep/2,
-    #                            sep)
-
+    caliperStops = caliperStops + thickLine(-(ii+1)*sep + thickness/2, # formerly - thickness
+                                            -(ii+1)*sep + thickness/2,
+                                            sep/2,
+                                            sep/2 + thickness,
+                                            chamferEnd = False)
+    """
+    
 
 # up til now everything has been vertical
 # rotate and mirror to make the horizontal measure points
@@ -126,8 +145,8 @@ result = result + caliperStops
 # Cutouts to account for potentially poorly or non calibrated PA
 paCuts = cq.Workplane()
 for ii in range(numMeasPoints):
-    paCuts = paCuts + (cq.Workplane().circle(pa).extrude(2*height).translate((-(ii+1)*sep - pa,-thickness/2,0)))
-    paCuts = paCuts + (cq.Workplane().circle(pa).extrude(2*height).translate(((ii+1)*sep + pa,-thickness/2,0)))
+    #paCuts = paCuts + (cq.Workplane().circle(pa).extrude(2*height).translate((-(ii+1)*sep - pa,-thickness/2,0)))
+    #paCuts = paCuts + (cq.Workplane().circle(pa).extrude(2*height).translate(((ii+1)*sep + pa,-thickness/2,0)))
     
     paCuts = paCuts + (cq.Workplane().circle(pa).extrude(2*height).translate(((ii+1)*sep - pa, sep/2 - thickness/4,0)))
     paCuts = paCuts + (cq.Workplane().circle(pa).extrude(2*height).translate((-(ii+1)*sep + pa, sep/2 - thickness/4,0)))
@@ -136,6 +155,8 @@ paCuts = (paCuts +
           paCuts.rotate((0,0,0),(0,0,1),-90)
           .mirror((0,1,0),(0,0,0)))
 result = result.cut(paCuts)
+
+
 
 # diagonal caliper stops
 diag = thickLine(0,0,
@@ -170,31 +191,18 @@ center = (cq.Workplane()
                    .close().extrude(height))
 
 
+
+
 if fightElephantFoot:
     result = result.faces("Z").chamfer(0.4,0.4)
     center = center.faces("Z").chamfer(0.4,0.4)
 
 result = result + center
+result = result.cut((cq.Workplane()
+                   .lineTo(0,thickness/2)
+                   .threePointArc((-thickness/2,0),(thickness/2,0))
+                   .close().extrude(height).translate((0,0,height-1))))
 
-# Last things, add axis orientation markers
-ar1 = (cq.Workplane().sketch()
-        .segment((0, -0.5),
-                 (8, -0.5))
-        .segment((8,-1))
-        .segment((12,0))
-        .segment((8,1))
-        .segment((8,0.5))
-        .segment((0,0.5))
-        .close().assemble().finalize().extrude(height).translate((7,0,height-2)))
-ar1 = ar1 + ar1.rotate((0,0,0),(0,0,1), 90)
-
-#x = cq.Workplane().text("X", 5, 1, fontPath = '/usr/share/fonts/TTF/RobotoCondensed-Bold.ttf').faces("<Z").wires().toPending().extrude(height).translate((thickness,0,height-1))
-#y = cq.Workplane().text("Y", 5, 1, fontPath = '/usr/share/fonts/TTF/Roboto-Bold.ttf').faces("<Z").wires().toPending().extrude(height).translate((0,thickness,height-1))
-
-#show_object(result)
-
-
-#result = result.cut(ar1)
 
 show_object(result)
 wd = os.getcwd()
