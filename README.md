@@ -1,4 +1,7 @@
 # Calistar (formerly Fleur de Cali)
+
+![Two examples](img/120x3_and_100x2.jpg?raw=true "120x3 and 100x2 example")
+
 This is a free, open source, parametric tool used for adjusting the dimensional correctness and skew of your printer. This model performs a similar function to other prints such as Califlower, but has no relation to nor has been derived from any part of those. Turns out that the math behind printer skew calibration has been around since Euclid, and its application to 3D printers is well-documented on other open source project's websites like Klipper. Getting the best performance out of your printer shouldn't be behind a paywall.
 
 Parameters you can control within the Cadquery source code:
