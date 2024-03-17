@@ -185,7 +185,12 @@ result = result.cut((cq.Workplane()
 
 # If this line is causing issues, you can comment it out
 # (it's only valid if you're using CQ-editor
-show_object(result)
+try:
+    show_object(result)
+except:
+    # must be running from an environment other than cq-editor
+    pass
+        
 wd = os.getcwd()
 exporters.export(result, f'{wd}/calistar_{fullWidth}x{numMeasPoints}.stl')
 exporters.export(result, f'{wd}/calistar_{fullWidth}x{numMeasPoints}.step')
