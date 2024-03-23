@@ -209,8 +209,10 @@ center = (cq.Workplane()
 
 
 if fightElephantFoot:
-    result = result.faces("Z").chamfer(0.4,0.4)
-    center = center.faces("Z").chamfer(0.4,0.4)
+    result = result.faces("+Z").chamfer(0.4,0.4)
+    result = result.faces("-Z").chamfer(0.4,0.4)
+    center = center.faces("+Z").chamfer(0.4,0.4)
+    center = center.faces("-Z").chamfer(0.4,0.4)
 
 result += center
 result -= ((cq.Workplane()
