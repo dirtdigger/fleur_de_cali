@@ -52,118 +52,154 @@ def thickLine(x0, x1, y0, y1,
                 .translate((xbar,ybar,0))
                 )
 
+def paWedge(sideLength = chamferSize, 
+            mirrorX = False, 
+            mirrorY = False, 
+            wp = cq.Workplane(),
+            height = height*2):
+    
+    wedge = (wp.moveTo(0,0)
+               .lineTo(0,sideLength)
+               .lineTo(sideLength,0)
+               .close().extrude(height)
+             )
+    if mirrorX:
+        # negate x coords
+        wedge = wedge.mirror((1,0,0),(0,0,0))
+    if mirrorY:
+        # negate y coords
+        wedge = wedge.mirror((0,1,0),(0,0,0))
+    return wedge
+    
+
 # Center line
 result = thickLine(0, 0, 
                    -fullWidth/2 - thickness,
                    fullWidth/2+thickness)
 
 # left and right lines, top and bottom
-result = result + thickLine(-sep + thickness/2, 
-                            -sep + thickness/2, 
-                             sep - thickness,
-                            fullWidth/2)
+result += thickLine(-sep + thickness/2, 
+                    -sep + thickness/2, 
+                    sep - thickness,
+                    fullWidth/2)
 
-result = result + thickLine(-sep + thickness/2, 
-                            -sep + thickness/2, 
-                            -sep + thickness,
-                            -fullWidth/2)
+result += thickLine(-sep + thickness/2, 
+                    -sep + thickness/2, 
+                    -sep + thickness,
+                    -fullWidth/2)
 
-result = result + thickLine(sep - thickness/2, 
-                            sep - thickness/2, 
-                            sep - thickness,
-                            fullWidth/2+thickness)
+result += thickLine(sep - thickness/2, 
+                    sep - thickness/2, 
+                    sep - thickness,
+                    fullWidth/2+thickness)
 
-result = result + thickLine(sep - thickness/2, 
-                            sep - thickness/2, 
-                            0,
-                            -fullWidth/2-thickness)
+result += thickLine(sep - thickness/2, 
+                    sep - thickness/2, 
+                    0,
+                    -fullWidth/2-thickness)
 caliperStops = cq.Workplane()
 
 # Draw all vertical pieces first
 for ii in range(numMeasPoints):
     # Basic frame
-    result = result + thickLine(-(ii+1)*sep + thickness/2, 
-                                -(ii+1)*sep + thickness/2, 
-                                -sep,
-                                0)
+    result += thickLine(-(ii+1)*sep + thickness/2, 
+                        -(ii+1)*sep + thickness/2, 
+                        -sep,
+                        0)
     
     # Exterior caliper stops
-    result = result + thickLine(-(ii+1)*sep -thickness/2, 
-                                -(ii+1)*sep -thickness/2, 
-                                -thickness,sep)
+    result += thickLine(-(ii+1)*sep -thickness/2, 
+                        -(ii+1)*sep -thickness/2, 
+                        -thickness,sep)
     
     
     
-    result = result + thickLine((ii+1)*sep + thickness/2, 
-                                (ii+1)*sep + thickness/2, 
-                                -thickness,sep)
+    result += thickLine((ii+1)*sep + thickness/2, 
+                        (ii+1)*sep + thickness/2, 
+                        -thickness,sep)
     
-    result = result + thickLine((ii+1)*sep - thickness/2, 
-                                (ii+1)*sep -thickness/2, 
-                                -sep,
-                                0)
+    result += thickLine((ii+1)*sep - thickness/2, 
+                        (ii+1)*sep -thickness/2, 
+                        -sep,
+                        0)
     
     # Interior caliper stops
-    caliperStops = caliperStops + thickLine((ii+1)*sep - thickness*2/3 - pa*2,
-                                (ii+1)*sep + thickness/2,
-                                sep/2 + thickness/4,
-                                sep/2 + thickness/4)
+    caliperStops += thickLine((ii+1)*sep - thickness*2/3 - pa*2,
+                              (ii+1)*sep + thickness/2,
+                              sep/2 + thickness/4,
+                              sep/2 + thickness/4)
 
-    caliperStops = caliperStops + thickLine(-(ii+1)*sep + thickness*2/3 + 2*pa,
-                                -(ii+1)*sep - thickness/2,
-                                sep/2-3*thickness/4,
-                                sep/2-3*thickness/4)
+    caliperStops += thickLine(-(ii+1)*sep + thickness*2/3 + 2*pa,
+                              -(ii+1)*sep - thickness/2,
+                              sep/2-3*thickness/4,
+                              sep/2-3*thickness/4)
     
 
 
 # up til now everything has been vertical
 # rotate and mirror to make the horizontal measure points
-result = (result + 
-          result.rotate((0,0,0),(0,0,1),-90)
+result += (result.rotate((0,0,0),(0,0,1),-90)
           .mirror((0,1,0),(0,0,0)))
 # Caliper stops shouldn't be mirrored
-caliperStops = caliperStops + caliperStops.rotate((0,0,0),(0,0,1),-90)
-result = result + caliperStops
+caliperStops += (caliperStops.
+                 rotate((0,0,0),(0,0,1),-90))
+result += caliperStops
 
 # Cutouts to account for potentially poorly or non calibrated PA
 paCuts = cq.Workplane()
 for ii in range(numMeasPoints):
-    paCuts = paCuts + (cq.Workplane().circle(pa).extrude(2*height).translate(((ii+1)*sep - pa, sep/2 - thickness/4,0)))
-    paCuts = paCuts + (cq.Workplane().circle(pa).extrude(2*height).translate((-(ii+1)*sep + pa, sep/2 - thickness/4,0)))
+    paCuts += (paWedge(mirrorY = True)
+               .translate((-(ii+1)*sep, 
+                           sep/2 - thickness/4,
+                           0)))
+    paCuts += (paWedge(mirrorX = True)
+               .translate(((ii+1)*sep, 
+                           sep/2 - thickness/4,
+                           0)))
+    
+    paCuts += (paWedge()
+               .translate((sep/2 - thickness/4,
+                           -(ii+1)*sep, 
+                           0)))
+    paCuts += (paWedge(mirrorX = True,mirrorY=True)
+               .translate((sep/2 - thickness/4,
+                           (ii+1)*sep, 
+                           0)))
 
-paCuts = (paCuts + 
-          paCuts.rotate((0,0,0),(0,0,1),-90)
-          .mirror((0,1,0),(0,0,0)))
 result = result.cut(paCuts)
-
 
 
 # diagonal caliper stops
 diag = thickLine(0,0,
                  0, fullWidth/2+thickness)
 
-diag = diag + thickLine(-diagWidth, 
+diag += thickLine(-diagWidth, 
                         -diagWidth, 
                         0,
                         fullWidth/2)
 # Top left
 for ii in range(numMeasPoints - 1):
-    diag = diag + thickLine(-diagWidth, 
+    diag += thickLine(-diagWidth, 
                             0,
                             (ii+2)*sep - thickness/2,
                             (ii+2)*sep - thickness/2)
-    diag = diag.cut(cq.Workplane().circle(pa).extrude(height).translate((-thickness/2,sep*(ii+2) + pa,0)))
+    diag -= (paWedge()
+             .translate((-thickness/2,
+                         (ii+2)*sep, 
+                         0)))
+
+    #diag = diag.cut(cq.Workplane().circle(pa).extrude(height).translate((-thickness/2,sep*(ii+2) + pa,0)))
 
 # Other four corners
-diag = diag + diag.mirror((0,1,0), (0,0,0))
-diag = diag + diag.rotate((0,0,0), (0,0,1), 90)
+diag += diag.mirror((0,1,0), (0,0,0))
+diag +=  diag.rotate((0,0,0), (0,0,1), 90)
 
 # rotate the whole thing and cut out the central frame
 diag = diag.rotate((0,0,0),(0,0,1),45)
-diag = diag.cut(thickLine(0,0,-fullWidth/2 - thickness,fullWidth/2 + thickness, thickness = sep*2) + 
-                thickLine(-fullWidth/2,fullWidth/2, 0, 0, thickness = sep*2))
+diag -= (thickLine(0,0,-fullWidth/2 - thickness,fullWidth/2 + thickness, thickness = sep*2) + 
+         thickLine(-fullWidth/2,fullWidth/2, 0, 0, thickness = sep*2))
 
-result = result + diag
+result += diag
 
 # Center circle that indicates orientation
 center = (cq.Workplane()
@@ -176,11 +212,12 @@ if fightElephantFoot:
     result = result.faces("Z").chamfer(0.4,0.4)
     center = center.faces("Z").chamfer(0.4,0.4)
 
-result = result + center
-result = result.cut((cq.Workplane()
-                   .lineTo(0,thickness/2)
-                   .threePointArc((-thickness/2,0),(thickness/2,0))
-                   .close().extrude(height).translate((0,0,height-1))))
+result += center
+result -= ((cq.Workplane()
+            .lineTo(0,thickness/2)
+            .threePointArc((-thickness/2,0),
+                           (thickness/2,0))
+            .close().extrude(height).translate((0,0,height-1))))
 
 
 # If this line is causing issues, you can comment it out
