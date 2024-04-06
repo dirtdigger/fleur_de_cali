@@ -1,3 +1,7 @@
+# Calistar wiki
+
+Check out the [wiki](https://github.com/dirtdigger/fleur_de_cali/wiki) for a step-by-step guide to Calistar!
+
 # Calistar (formerly Fleur de Cali)
 
 ![Two examples](img/120x3_and_100x2.jpg?raw=true "120x3 and 100x2 example")
@@ -20,6 +24,5 @@ Features:
 
 Stl and step files that are included are all 4mm tall and have varying thickness depending on the size of the print. The files are named calistar_{print width}x{number of measurements per axis}.stl.
 
-Measurement order is to measure from the outside in. This is described in more detail in the accompanying spreadsheet.
-
 Note about Enders and other budget printers: the movement on the x-axis is non-linear, [see here](https://klipper.discourse.group/t/correct-dimensional-accuracy/6093/5) for discussion on the matter. Calistar works on the principle that movement in each axis is linear, and therefore cannot be used to calibrate the dimensional accuracy of such printers. However, it _can_ be used to calculate and fix your printer's skew.
+
