@@ -26,3 +26,16 @@ Stl and step files that are included are all 4mm tall and have varying thickness
 
 Note about Enders and other budget printers: the movement on the x-axis is non-linear, [see here](https://klipper.discourse.group/t/correct-dimensional-accuracy/6093/5) for discussion on the matter. Calistar works on the principle that movement in each axis is linear, and therefore cannot be used to calibrate the dimensional accuracy of such printers. However, it _can_ be used to calculate and fix your printer's skew.
 
+# Brower-based calibration worksheet
+
+The web-based calibration worksheet is Markdown that has been written to be compiled with [Material for Mkdocs](https://squidfunk.github.io/mkdocs-material/). A compiled version is available on [Printables](https://www.printables.com/model/778188-calistar-parametric-open-source-alternative-to-cal), simply unzip `calistar_browser.zip` and open `index.html` in a web browser. 
+
+# Excel-based calibration worksheet
+
+An Excel-based calibration worksheet is included in the repo. It was created in Google Sheets, and has been tested in Excel and LibreOffice Calc. Using it with any other spreadsheet tool is unsupported and may result in errors that will not be addressed.
+
+# License
+
+Calistar source code and stls are distributed under GPL3 license. 
+
+[jSpreadsheets](https://github.com/jspreadsheet/ce), [jSuites](https://github.com/jsuites/jsuites), and [Plotly Javascript](https://plotly.com/javascript/is-plotly-free/) libraries are also included in the repository, and are re-distributed under the MIT license.
