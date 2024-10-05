@@ -1,0 +1,40 @@
+
+
+.meas
+{
+  width: 100px;
+}
+
+
+.meascell
+{
+  width: 60px;
+}
+
+
+.md-sidebar--secondary {
+  order: 0;
+}
+
+
+
+
+tr[type=meas3]
+{
+  display: "";
+}
+
+tr[type=meas4]
+{
+  display: "";
+}
+
+tr[type=meas5]
+{
+  display: "";
+}
+
+
+.meastbl .table {
+
+}
