@@ -229,11 +229,11 @@ function updateDimensionality()
   dom.innerHTML = '(' + String((xerror*100).toFixed(2)) + '%, ' + String((yerror*100).toFixed(2)) + '%)'
 
   data = document.getElementById('dimGraph').data;
-  data[0]['x'] = [xerror*100,yerror*100];
-  data[0]['error_x']['array'] = [2*xsigma*100,2*ysigma*100];
+  data[0]['x'] = [yerror*100,xerror*100];
+  data[0]['error_x']['array'] = [2*ysigma*100,2*xsigma*100];
 
-  data[1]['x'] = [xerror*100,yerror*100];
-  data[1]['error_x']['array'] = [xsigma*100,ysigma*100];
+  data[1]['x'] = [yerror*100,xerror*100];
+  data[1]['error_x']['array'] = [ysigma*100,xsigma*100];
   
   Plotly.redraw('dimGraph');
 

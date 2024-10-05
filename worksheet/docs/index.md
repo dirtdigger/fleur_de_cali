@@ -475,7 +475,7 @@ Here are your printer's dimensionality results. The goal of this tool is to help
 
 var trace1 = {
   x: [0,1],
-  y: ['x-axis', 'y-axis'],
+  y: ['y-axis', 'x-axis'],
   mode: 'markers',
   name: '2-sigma',
   error_x: {
@@ -495,7 +495,7 @@ var trace1 = {
 
 var trace2 = {
   x: [0,1],
-  y: ['x-axis', 'y-axis'],
+  y: ['y-axis', 'x-axis'],
   mode: 'markers',
   name: '1-sigma',
   error_x: {
