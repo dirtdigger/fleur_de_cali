@@ -36,7 +36,7 @@ Calistar is a *parametric* calibration tool. This worksheet needs to know what p
 <tr markdown>
 <td  markdown> Total width (mm) :material-information-outline:{ title="If you printed 'calistar_MxN.stl', then this is the value of M<br>Default: 120" }
 </td>
-<td> <input type="number" value="100" id="calistarSize" size = "5" onchange="setNominals()"/> mm
+<td> <input type="number" value="120" id="calistarSize" size = "5" onchange="setNominals()"/> mm
 </td>
 </tr>
 
@@ -45,8 +45,8 @@ Calistar is a *parametric* calibration tool. This worksheet needs to know what p
 </td>
 <td>
 <select id="numMeasPts" name="numMeasPts" onchange="changeNumMeasPts()">
-<option selected>2</option>
-<option>3</option>
+<option>2</option>
+<option selected>3</option>
 <option>4</option>
 <option>5</option>
 </select>
