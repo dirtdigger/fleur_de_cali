@@ -13,7 +13,7 @@ hide:
 # Calistar Calibration Worksheet
 
 !!! Note
-    This worksheet is currently a work in progress! It should have preliminary functionality, but that functionality may have bugs or errors. Please report any bugs you find on the issue tracker.
+    This worksheet is currently a work in progress! It should have full functionality, but that functionality may have bugs or errors. Please report any bugs you find on the issue tracker.
 
 
 ## Before you start
