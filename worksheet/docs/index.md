@@ -81,14 +81,19 @@ Use Sample Error :material-information-outline:{ title="If checked, the workshee
 
 ## Post-print Worksheet
 
+
+
+
 !!! Warning
     Allow the print to *cool completely*. Then, remove it from the bed prior to measuring. Failure to do either of these steps could result in poor results.
 
 
 Please see [this wiki page](https://github.com/dirtdigger/fleur_de_cali/wiki/Measuring) for additional tips on orienting the print and measuring hints.
 
+![calistar_MxN measurement points](img/meas_pts_3.svg){data-gallery="measpts" style="float:left;margin-right: 20px;margin-top: 7px;" width=200px height='auto' id='calistar_MxN'}
 
-Along each axis, measurements work from the outside in (see figure). Measure in this order:
+<div markdown>
+Along each axis, measurements work from the outside in (see figure on left &mdash; click on it to zoom). Measure in this order:
 
 1. x-axis outside	(horizontal in picture)
 
@@ -99,7 +104,7 @@ Along each axis, measurements work from the outside in (see figure). Measure in 
 4. y-axis inside	(vertical in picture)
 
 5. Diagonals	(Capital D first, then lowercase d)
-
+</div>
 
 
 

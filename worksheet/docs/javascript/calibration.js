@@ -188,6 +188,14 @@ function changeNumMeasPts()
 {
   hideMeasurementRows();
   setNominals();
+  let N = String(document.getElementById('numMeasPts').value);
+  document.getElementById('calistar_MxN').src = 'img/meas_pts_' + N + '.svg';
+  // TODO: need a more robust way to do this
+  document.getElementsByClassName('glightbox')[0].href = 'img/meas_pts_' + N + '.svg';
+  if (typeof(lightbox) != 'undefined')
+  {
+    lightbox.reload();
+  } 
 }
 
 function updateDimensionality()

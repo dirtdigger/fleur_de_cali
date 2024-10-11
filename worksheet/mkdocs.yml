@@ -25,7 +25,10 @@ markdown_extensions:
 
 extra_css:
   - stylesheets/style.css
-  
+
+plugins:
+  - glightbox
+    
 theme:
   name: material
 
