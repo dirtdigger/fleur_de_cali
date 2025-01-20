@@ -28,7 +28,7 @@ function     hideMeasurementRows()
   let M = Number(document.getElementById('numMeasPts').value);
 
 
-  for (let ii = 0; ii < 27; ii++)
+  for (let ii = 0; ii <= 27; ii++)
   {
     worksheet.showRow(ii);
   }
